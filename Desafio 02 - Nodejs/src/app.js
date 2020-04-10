@@ -85,7 +85,7 @@ app.delete("/repositories/:id", (request, response) => {
   return response.status(204).send();
 
 });
-
+/*
 app.post("/repositories/:id/like", (request, response) => {
   const { id } = request.params;
 
@@ -96,6 +96,23 @@ app.post("/repositories/:id/like", (request, response) => {
       return response.status(400).json({ error: "project not found" });
   }
   repo.like += 1;
+  repositories[repoIndex] = repo;
+
+  return response.status(200).json(repo);
+});
+*/
+
+app.post("/repositories/:id/like", (request, response) => {
+  const { id } = request.params;
+
+  const repo = repositories.find(repo => repo.id === id);
+
+  const repoIndex = repositories.findIndex(repo => repo.id === id);
+  
+  if (!repo){
+    return response.status(400).json({ error: "Repository not found."});
+  }
+  repoIndex.like += 1;
   repositories[repoIndex] = repo;
 
   return response.status(200).json(repo);
