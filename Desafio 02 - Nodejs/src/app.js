@@ -89,13 +89,13 @@ app.delete("/repositories/:id", (request, response) => {
 app.post("/repositories/:id/like", (request, response) => {
  const { id } = request.params;
 
- repoIndex = repositories.find(repo => repo.id === id);
+ const repoIndex = repositories.find(repo => repo.id === id);
 
   if (!repoIndex ) {
     return response.status(400).json({ error: "Repository not found."});
   }
 
-  repositories.like += 1;
+  return repositories[repoIndex].like += 1;
 });
 
 module.exports = app;
