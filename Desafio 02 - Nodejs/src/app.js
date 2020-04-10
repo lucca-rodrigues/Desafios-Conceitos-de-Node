@@ -86,6 +86,9 @@ app.delete("/repositories/:id", (request, response) => {
 
 });
 
+
+// LIKES
+
 app.post("/repositories/:id/like", (request, response) => {
   const { id } = request.params;
 
