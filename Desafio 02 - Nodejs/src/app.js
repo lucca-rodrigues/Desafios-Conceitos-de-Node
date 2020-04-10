@@ -37,7 +37,7 @@ app.get("/repositories", (request, response) => {
 
 app.post("/repositories", (request, response) => {
   const { title, url, techs } = request.body;
-  const repo = { id: uuid(), title, url, techs }; 
+  const repo = { id: uuid(), title, url, techs, likes: 0 }; 
 
   repositories.push(repo);
   return response.json(repo);
@@ -59,7 +59,8 @@ app.put("/repositories/:id", (request, response) => {
     id,
     title,
     url,
-    techs
+    techs,
+    likes: repositories[repoIndex].likes
   };
 
   repositories[repoIndex] = repo;
@@ -114,39 +115,6 @@ app.post("/repositories/:id/like", (request, response) => {
 
 });
 
-/*
-app.post("/repositories/:id/like", (request, response) => {
-  const { id } = request.params;
-
-  const repo = repositories.find(repo => repo.id === id);
-
-  const repoIndex = repositories.findIndex(repo => repo.id === id);
-  if (repoIndex < 0){
-      return response.status(400).json({ error: "project not found" });
-  }
-  repo.like += 1;
-  repositories[repoIndex] = repo;
-
-  return response.status(200).json(repo);
-});
-*/
-
-/*
-app.post("/repositories/:id/like", (request, response) => {
-  const { id } = request.params;
-
-  const repo = repositories.find(repo => repo.id === id);
-
-  const repoIndex = repositories.findIndex(repo => repo.id === id);
-
-  if (!repo){
-    return response.status(400).json({ error: "Repository not found."});
-  }
-  repo.like += 1;
-  repositories[repoIndex] = repo;
-
-  return response.status(200).json(repo);
-}); */
 
 
 module.exports = app;
