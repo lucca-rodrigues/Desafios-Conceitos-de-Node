@@ -1,5 +1,5 @@
 const express = require("express");
-const { uuid } = require("uuidv4");
+const { uuid, isUuid } = require("uuidv4");
 const cors = require("cors");
 
 
@@ -9,6 +9,21 @@ app.use(express.json());
 app.use(cors());
 
 const repositories = [];
+const like = [];
+
+function validadeProjectID(request, response, next){
+  const { id } = request.params;
+
+  if (!isUuid(id)){
+    return response.status(400).json({ error: 'Invalid Project ID.'});
+  }
+  return next();
+}
+
+app.use('/repositories:id', validadeProjectID);
+app.use('/repositories/:id/like', validadeProjectID);
+
+// GET
 
 app.get("/repositories", (request, response) => {
   const { title } = request.query;
@@ -19,6 +34,8 @@ app.get("/repositories", (request, response) => {
     return response.json(results);
 });
 
+// POST
+
 app.post("/repositories", (request, response) => {
   const { title, url, techs } = request.body;
   const repo = { id: uuid(), title, url, techs }; 
@@ -27,11 +44,13 @@ app.post("/repositories", (request, response) => {
   return response.json(repo);
 });
 
+
+// PUT
 app.put("/repositories/:id", (request, response) => {
   const { id } = request.params;
   const { title, url, techs } = request.body;
 
-  const repoIndex = repos.findIndex(repo => repo.id === id);
+  const repoIndex = repositories.findIndex(repo => repo.id === id);
 
   if (repoIndex < 0 ) {
     return response.status(400).json({ error: 'not found!'});
@@ -44,11 +63,13 @@ app.put("/repositories/:id", (request, response) => {
     techs
   };
 
-  repos[repoIndex] = repo;
+  repositories[repoIndex] = repo;
 
   return response.json(repo);
 
 });
+
+// DELETE
 
 app.delete("/repositories/:id", (request, response) => {
   const { id } = request.params;
@@ -66,7 +87,15 @@ app.delete("/repositories/:id", (request, response) => {
 });
 
 app.post("/repositories/:id/like", (request, response) => {
-  // TODO
+ const { id } = request.params;
+
+ repoIndex = repositories.find(repo => repo.id === id);
+
+  if (!repoIndex ) {
+    return response.status(400).json({ error: "Repository not found."});
+  }
+
+  repositories.like += 1;
 });
 
 module.exports = app;
